@@ -1,0 +1,154 @@
+
+<html>
+  <head>
+    <title>LeAerialle's Product Web Services</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+	
+    $(document).ready(function() {
+      alert("running script");
+      $("#btnAll").click(function() {
+		alert("clicked");
+        $.ajax( {
+          url:"http://localhost:8080/webserv1/resources/ws2/products/",
+          type: "GET",
+          dataType: "text",
+          success: function(result) {
+            alert("success");
+            var prodArray = JSON.parse(result);
+            var output = "<h3>Product List</h3>";
+            output += "<ul>";
+            for(var i =0;i<prodArray.length;i++) {
+              output += "<li>" + prodArray[i].id + "-" + prodArray[i].name + ":" + prodArray[i].description + ", $" + prodArray[i].price + ", " + prodArray[i].stock  + "</li>";
+            }
+            output += "</ul>";
+            $("#p_retrieveAll").html(output);
+          },
+          error:function(xhr) {
+            alert("error");
+            $("#p_retrieveAll").html("Error:"+xhr.status+" " + xhr.statusText);
+          }
+        });
+      });
+
+      $("#btnOneId").click(function() {
+        alert("clicked");
+        var inputId=document.getElementById("t_prodId").value;
+        var theUrl = "http://localhost:8080/webserv1/resources/ws2/products/"+inputId;
+        $.ajax({
+          url: theUrl,
+          type: "GET",
+          dataType: "text",
+          success: function(result) {
+            alert("success");
+            var prodArray = JSON.parse(result);
+            var output = "<h3>Product By Id</h3>";
+            output += "<p>" + prodArray[0].id + "-" + prodArray[0].name + ":" + prodArray[0].description + ", $" + prodArray[0].price + ", " + prodArray[0].stock  + "</p>";
+            $("#p_retrieveOneId").html(output);
+          },
+          error: function(xhr) {
+            alert("error");
+            $("#p_retrieveOneId").html("Error: " + xhr.status+ " " + xhr.statusText);
+          }
+        });
+      });
+
+      $("#btnOneName").click(function() {
+        alert("clicked");
+        var inputName=document.getElementById("t_prodName").value;
+        var theUrl = "http://localhost:8080/webserv1/resources/ws2/products/product?name="+inputName;
+        $.ajax({
+          url: theUrl,
+          type: "GET",
+          dataType: "text",
+          success: function(result) {
+            alert("success");
+            var prodArray = JSON.parse(result);
+            var output = "<h3>Product By Name</h3>";
+            output += "<p>" + prodArray[0].id + "-" + prodArray[0].name + ":" + prodArray[0].description + ", $" + prodArray[0].price + ", " + prodArray[0].stock  + "</p>";
+            $("#p_retrieveOneName").html(output);
+          },
+          error: function(xhr) {
+            alert("error");
+            $("#p_retrieveOneName").html("Error: " + xhr.status+ " " + xhr.statusText);
+          }
+        });
+      });
+
+      $("#btnCreateProd").click(function() {
+        alert("clicked");
+        var newName = document.getElementById("t_prodNameCreate").value;
+        var newDescr = document.getElementById("t_prodDescrCreate").value;
+        var newPrice = document.getElementById("t_prodPriceCreate").value;
+        var newStock = document.getElementById("t_prodStockCreate").value;
+        var theData = "name="+newName+"&"+"description="+newDescr+"&"+"price="+newPrice+"&"+"stock="+newStock;
+        alert("Sending: "+theData);
+        var theUrl = "http://localhost:8080/webserv1/resources/ws2/products/";
+        $.ajax({
+          url: theUrl,
+          type: "POST",
+          dataType: "text",
+          contentType: "application/X-WWW-form-urlencoded",
+          data: theData,
+          success: function(result) {
+              alert("succes: ");
+              var prodArray = JSON.parse(result);
+              alert(prodArray);
+              var output = "<h3>Just added</h3>";
+              output += "<ul>";
+              for(var i=0;i<prodArray.length;i++) {
+                output += "<li>" + prodArray[i].id + "-" + prodArray[i].name + ":" + prodArray[i].description + ", $" + prodArray[i].price + ", " + prodArray[i].stock  +  "</li>";
+              }
+              output+= "</ul>";
+              alert(output);
+              $("#p_createProd").html(output);
+            },
+          error: function(xhr) {
+              alert("error: ");
+              $("#p_createProd").html("Error: " + xhr.status+ " " + xhr.statusText);
+            }
+        });
+      });
+
+    });
+    </script>
+
+  </head>
+  <body>
+    <h1>Product Services</h1>
+
+    <div id="retrieveAll">
+      <button type="button" id="btnAll">Click to retrieve all products</button>
+      <p id="p_retrieveAll">Product List goes here</p>
+    </div>
+<br>
+    <div id="retrieveOneId">
+      <input type="text" id="t_prodId" value="Type id here">
+      <button type="button" name="button" id="btnOneId">Click to retrieve by Id</button>
+      <p id="p_retrieveOneId">Product by Id goes here</p>
+    </div>
+<br>
+    <div id="retrieveOneName">
+      <input type="text" id="t_prodName" value="Type name here">
+      <button type="button" name="button" id="btnOneName">Click to retrieve by Name</button>
+      <p id="p_retrieveOneName">Product by names goes here</p>
+    </div>
+<br>
+    <div id="createProd">
+      <h4>Add Product</h4>
+      <form id="f_createProd">
+        <label for="t_prodNameCreate">Product Name: </label>
+        <input type="text" id="t_prodNameCreate" value="Type name here">
+        <label for="t_prodDescrCreate">Product Description: </label>
+        <input type="text" id="t_prodDescrCreate" value="Type Description here"><br>
+        <label for="t_prodPriceCreate">Product Price: </label>
+        <input type="text" id="t_prodPriceCreate" value="Type Price here">
+        <label for="t_prodStockCreate">Product Stock: </label>
+        <input type="text" id="t_prodStockCreate" value="Type stock here"><br>
+        <button type="button" id="btnCreateProd">Click to Add this Product</button>
+      </form>
+      <p id="p_createProd">Created Product goes here</p>
+    </div>
+
+  </body>
+</html>
