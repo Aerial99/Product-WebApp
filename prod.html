@@ -35,7 +35,7 @@
         alert("clicked");
         var inputId=document.getElementById("t_prodId").value;
         var theUrl = "http://localhost:8080/webserv1/resources/ws2/products/"+inputId;
-        $.ajax({
+        $.ajax({ 
           url: theUrl,
           type: "GET",
           dataType: "text",
